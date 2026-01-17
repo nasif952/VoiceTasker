@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -162,13 +163,30 @@ fun TaskCreateScreen(
                     .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                TaskPriority.values().forEach { priority ->
-                    OutlinedButton(
+                TaskPriority.entries.forEach { priority ->
+                    val isSelected = viewModel.priority.value == priority
+                    val buttonColors = when (priority) {
+                        TaskPriority.HIGH -> ButtonDefaults.buttonColors(
+                            containerColor = if (isSelected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface,
+                            contentColor = if (isSelected) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.error
+                        )
+                        TaskPriority.MEDIUM -> ButtonDefaults.buttonColors(
+                            containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                            contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary
+                        )
+                        TaskPriority.LOW -> ButtonDefaults.buttonColors(
+                            containerColor = if (isSelected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surface,
+                            contentColor = if (isSelected) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.tertiary
+                        )
+                    }
+
+                    Button(
                         onClick = { viewModel.priority.value = priority },
                         modifier = Modifier
                             .weight(1f)
                             .height(40.dp),
-                        enabled = !viewModel.isLoading.value
+                        enabled = !viewModel.isLoading.value,
+                        colors = buttonColors
                     ) {
                         Text(priority.name)
                     }
