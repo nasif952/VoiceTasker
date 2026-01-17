@@ -6,11 +6,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **VoiceTasker** is an Android task management application that allows users to create, manage, and receive reminders for tasks using voice input and text. The app is built with modern Android architecture and libraries including Jetpack Compose, Hilt dependency injection, Room database, and Retrofit networking.
 
-**Current Phase**: Phase 1 - Core Features Infrastructure (~40% complete)
-- Build structure and scaffolding created
-- UI screens layout complete (Login, Register, Home, Task Create)
-- Architecture patterns established
-- Next focus: Implement business logic and API integration
+**Current Phase**: Phase 2 - Core Features Complete with Mock API (~60% complete)
+
+### Completed Features (Working with Mock API)
+- **Authentication**: Login/Register with form validation (FakeAuthRepository)
+- **Task CRUD**: Full Create, Read, Update, Delete functionality (FakeTaskRepository)
+- **Task List**: Display tasks with priority color-coding, completion status
+- **Task Create**: Form with title, description, priority buttons, date picker
+- **Task Edit**: Edit existing tasks with pre-populated form
+- **Toggle Complete**: Checkbox to mark tasks complete/incomplete
+- **Delete Tasks**: Remove tasks from list
+- **Date Picker**: Material 3 DatePickerDialog for due date selection
+- **Priority Selection**: Color-coded buttons (HIGH=red, MEDIUM=primary, LOW=tertiary)
+- **Navigation**: Full navigation flow between screens
+
+### Currently Using Mock API
+All features work with in-memory fake repositories for testing:
+- `FakeAuthRepository` - Mock login/register with hardcoded credentials
+- `FakeTaskRepository` - In-memory task storage with simulated delays
+
+### Next Phase: Real Backend Integration
+- Connect to real API (Supabase or custom backend)
+- Implement proper token storage
+- Add offline-first sync with Room database
+- Voice input feature
 
 ## Build & Development Commands
 
@@ -272,15 +291,22 @@ Runtime permissions (RECORD_AUDIO, POST_NOTIFICATIONS) must be requested when fe
 
 ## Known Gaps & TODOs
 
-### Incomplete Areas
-1. **AppModule.kt** - Has TODO comments for network, database, repository, auth dependencies - needs proper Hilt bindings
-2. **TaskDao.kt** - Only has stub definitions, needs actual Room query implementations
-3. **ViewModels** - Basic structure only, no actual business logic implementation
-4. **API Integration** - Retrofit services defined but not integrated with real backend (Supabase)
-5. **Error Handling** - Minimal, needs comprehensive error handling across layers
-6. **Testing** - Test infrastructure in place but no tests written yet
-7. **Voice Recording** - Not implemented, will be core feature
-8. **Notifications/Reminders** - Receivers registered but logic not implemented
+### Completed
+- [x] AppModule.kt - Provides FakeAuthRepository and FakeTaskRepository
+- [x] ViewModels - LoginViewModel, RegisterViewModel, TaskListViewModel, TaskCreateViewModel, TaskEditViewModel all working
+- [x] Task CRUD - Full functionality with mock repository
+- [x] Form validation - Email, password, task title validation
+- [x] Navigation - Complete flow between all screens
+
+### Remaining Work
+1. **Real API Integration** - Replace Fake repositories with real Retrofit API calls
+2. **Room Database** - Implement local persistence for offline-first support
+3. **TaskDao.kt** - Only has stub definitions, needs actual Room query implementations
+4. **Token Storage** - Securely store auth tokens (EncryptedSharedPreferences)
+5. **Voice Recording** - Not implemented, will be core feature
+6. **Notifications/Reminders** - Receivers registered but logic not implemented
+7. **Testing** - Test infrastructure in place but no tests written yet
+8. **Error Handling** - Basic error handling done, needs improvement for network errors
 
 ### Database Initialization
 - Room database uses in-memory database by default (for testing)
@@ -372,27 +398,43 @@ fun testLoginSuccess() = runTest {
 
 ## Next Implementation Priorities
 
-**Week 1-2: Authentication**
-- Complete `LoginViewModel` with actual auth logic
-- Complete `RegisterViewModel` with validation
-- Connect to backend API
-- Store tokens securely
+### Phase 3: Backend Integration (Next)
+Choose one of these backend options:
+1. **Supabase** - Quick setup, PostgreSQL, built-in auth
+2. **Firebase** - Google ecosystem, Firestore, easy auth
+3. **Custom API** - Full control, requires server setup
 
-**Week 2-3: Task Management**
-- Implement `TaskListViewModel` with task list flow
-- Implement `TaskCreateViewModel` with task save
-- Connect to Task API endpoints
+**Tasks:**
+- [ ] Set up backend (Supabase/Firebase/Custom)
+- [ ] Create real AuthRepository replacing FakeAuthRepository
+- [ ] Create real TaskRepository replacing FakeTaskRepository
+- [ ] Implement JWT/token storage with EncryptedSharedPreferences
+- [ ] Add network error handling and retry logic
 
-**Week 3-4: Voice Recording**
-- Implement voice recording service
-- Add speech-to-text integration
-- Connect voice input to task creation
+### Phase 4: Offline-First & Local Storage
+- [ ] Implement Room database persistence
+- [ ] Add sync logic (local-first, sync when online)
+- [ ] Handle conflict resolution
+- [ ] Add loading/sync status indicators
 
-**Week 4+: Reminders & Polish**
-- Implement reminder scheduling with AlarmManager
-- Implement notification display
-- Error handling and edge cases
-- Testing and stability
+### Phase 5: Voice Input Feature
+- [ ] Implement voice recording with MediaRecorder
+- [ ] Add speech-to-text (Google Speech API or on-device)
+- [ ] Parse voice input to extract task details
+- [ ] Add voice button to task creation screen
+
+### Phase 6: Reminders & Notifications
+- [ ] Implement AlarmManager for task reminders
+- [ ] Create notification channel and display
+- [ ] Add reminder time picker to task form
+- [ ] Handle boot receiver for persisted alarms
+
+### Phase 7: Polish & Testing
+- [ ] Write unit tests for ViewModels
+- [ ] Write integration tests
+- [ ] UI polish and animations
+- [ ] Error handling improvements
+- [ ] Performance optimization
 
 See `final_destination/05_DEVELOPMENT_ROADMAP.md` for full 20-week plan.
 
