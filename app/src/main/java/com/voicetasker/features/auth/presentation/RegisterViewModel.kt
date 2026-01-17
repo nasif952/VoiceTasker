@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voicetasker.core.model.RegisterRequest
-import com.voicetasker.features.auth.data.repository.AuthRepository
+import com.voicetasker.features.auth.data.repository.FakeAuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,7 +15,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: FakeAuthRepository
 ) : ViewModel() {
 
     // UI State
