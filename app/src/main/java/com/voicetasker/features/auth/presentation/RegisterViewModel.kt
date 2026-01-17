@@ -3,8 +3,7 @@ package com.voicetasker.features.auth.presentation
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.voicetasker.core.model.RegisterRequest
-import com.voicetasker.features.auth.data.repository.FakeAuthRepository
+import com.voicetasker.features.auth.data.repository.FirebaseAuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,7 +14,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val authRepository: FakeAuthRepository
+    private val authRepository: FirebaseAuthRepository
 ) : ViewModel() {
 
     // UI State
@@ -87,16 +86,13 @@ class RegisterViewModel @Inject constructor(
         isLoading.value = true
         viewModelScope.launch {
             val result = authRepository.register(
-                RegisterRequest(
-                    name = name.value,
-                    email = email.value,
-                    password = password.value
-                )
+                email = email.value,
+                password = password.value
             )
 
             isLoading.value = false
 
-            result.onSuccess { authResponse ->
+            result.onSuccess { user ->
                 // Registration successful
                 isRegisterSuccess.value = true
             }

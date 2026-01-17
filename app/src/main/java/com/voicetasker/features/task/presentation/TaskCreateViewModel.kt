@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.voicetasker.core.model.CreateTaskRequest
 import com.voicetasker.core.model.TaskPriority
-import com.voicetasker.features.task.data.repository.FakeTaskRepository
+import com.voicetasker.features.task.data.repository.FirebaseTaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +16,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class TaskCreateViewModel @Inject constructor(
-    private val taskRepository: FakeTaskRepository
+    private val taskRepository: FirebaseTaskRepository
 ) : ViewModel() {
 
     // Form State
