@@ -1,0 +1,203 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    VOICETASKER - QUICK RUN GUIDE
+═══════════════════════════════════════════════════════════════════════════════
+
+⚡ FASTEST WAY TO RUN THE APP (5 MINUTES)
+
+STEP 1: Open Project
+   └─ File → Open
+   └─ Select: C:\Users\ROG\AndroidStudioProjects\VoiceTasker
+   └─ Click OK
+
+STEP 2: Wait for Gradle Sync
+   └─ Watch bottom status bar
+   └─ Wait for "Gradle sync finished" (green checkmark)
+   └─ Takes 2-5 minutes first time
+
+STEP 3: Start Emulator
+   └─ Tools → Device Manager
+   └─ Click play button (▶) next to Android device
+   └─ Wait 2 minutes for boot
+
+STEP 4: Run App
+   └─ Click green play button (▶) in top toolbar
+   └─ Or press Shift+F10
+   └─ Select your emulator from popup
+   └─ Click OK
+
+STEP 5: Wait for Install
+   └─ Watch Logcat at bottom (should see "installed successfully")
+   └─ App launches automatically
+
+RESULT: Login screen should appear! ✅
+
+═══════════════════════════════════════════════════════════════════════════════
+
+DETAILED STEPS (If quick way doesn't work)
+
+1️⃣ OPEN ANDROID STUDIO
+   ▪ Start Android Studio
+   ▪ Wait for it to fully load (splash screen disappears)
+
+2️⃣ OPEN PROJECT
+   ▪ File menu → Open
+   ▪ Navigate to: C:\Users\ROG\AndroidStudioProjects\VoiceTasker
+   ▪ Select folder, click OK
+   ▪ Android Studio loads project (1-2 min)
+
+3️⃣ GRADLE SYNC
+   ▪ Look at bottom status bar
+   ▪ Should see "Gradle sync in progress..."
+   ▪ Wait until "Gradle sync finished" appears
+   ▪ If fails: Click "Sync Now" again or restart Android Studio
+
+4️⃣ VERIFY BUILD
+   ▪ Build → Build Project (or Ctrl+F9)
+   ▪ Wait for build to complete
+   ▪ Check bottom right: "Build successful" ✓
+   ▪ No red error messages
+
+5️⃣ START EMULATOR
+   ▪ Tools → Device Manager (or click device icon in toolbar)
+   ▪ Look for device (e.g., "Pixel 5 API 34")
+   ▪ If no devices: Click "Create Device" and follow wizard
+   ▪ Click play button (▶) to start device
+   ▪ Wait 2-3 minutes for Android boot screen
+   ▪ When you see lock screen = ready
+
+6️⃣ SELECT DEVICE
+   ▪ In toolbar, click device dropdown (shows "Select device")
+   ▪ Choose your emulator
+   ▪ Click OK
+
+7️⃣ RUN APPLICATION
+   ▪ Click green play button (▶) in toolbar
+   ▪ Or keyboard: Shift+F10
+   ▪ Or menu: Run → Run 'app'
+   ▪ Wait 1-2 minutes for app to install and launch
+
+8️⃣ VERIFY APP LAUNCHED
+   ▪ Look for "Voice Tasker" login screen
+   ▪ Check Logcat (bottom panel) for errors
+   ▪ If you see red text = crash (see TROUBLESHOOTING)
+   ▪ If login screen appears = SUCCESS! ✅
+
+═══════════════════════════════════════════════════════════════════════════════
+
+KEYBOARD SHORTCUTS
+
+Shift+F10  → Run app
+Ctrl+F9    → Build project
+Shift+F9   → Debug app
+Ctrl+F2    → Stop app
+Ctrl+H     → Find & Replace
+Ctrl+Alt+L → Format code
+
+═══════════════════════════════════════════════════════════════════════════════
+
+TROUBLESHOOTING
+
+PROBLEM: "Gradle sync failed"
+FIX:
+  ▪ Click "Sync Now" notification
+  ▪ If still fails: File → Invalidate Caches / Restart
+  ▪ If still fails: Check SDK path in File → Project Structure
+
+PROBLEM: "No devices found"
+FIX:
+  ▪ Device Manager → Create Device (if none exist)
+  ▪ Click play button to start emulator
+  ▪ Wait 2-3 minutes for boot
+  ▪ Check Device Manager shows it running
+
+PROBLEM: "Build failed"
+FIX:
+  ▪ Build → Clean Project
+  ▪ Build → Rebuild Project
+  ▪ Check Logcat for errors
+
+PROBLEM: App launches then crashes
+FIX:
+  ▪ Check Logcat (bottom) for red text
+  ▪ Search for "Exception" or "Error"
+  ▪ Google the error message
+  ▪ Try: Build → Clean → Rebuild
+
+PROBLEM: "SDK not found"
+FIX:
+  ▪ File → Project Structure
+  ▪ See SDK Location
+  ▪ Should be: C:\Users\ROG\AppData\Local\Android\Sdk
+  ▪ If not, download SDK: Tools → SDK Manager
+
+PROBLEM: Emulator too slow
+FIX:
+  ▪ Device Manager → (right-click device) → Edit
+  ▪ Advanced Settings tab
+  ▪ Increase RAM to 4-6 GB
+  ▪ Or use physical device instead
+
+═══════════════════════════════════════════════════════════════════════════════
+
+WHAT YOU SHOULD SEE
+
+✅ Android Studio interface with your code on left
+✅ Device Manager showing running device/emulator
+✅ Login screen with:
+   - "Voice Tasker" title
+   - Email input field
+   - Password input field
+   - Login button
+   - "Register" link
+✅ Bottom Logcat showing startup messages (no red errors)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+NEXT STEPS
+
+1. Verify app runs without crashes
+2. Try typing in email/password fields (should work)
+3. Click buttons (may not do anything yet - not implemented)
+4. Check Logcat for any warnings/errors
+5. Read: README_DEVELOPMENT.md for next implementation steps
+
+═══════════════════════════════════════════════════════════════════════════════
+
+QUICK CHECKLIST
+
+□ Android Studio opened
+□ Project loaded (no errors in Project panel)
+□ Gradle synced (no red notifications)
+□ Emulator created or device connected
+□ Build successful (Build → Build Project shows ✓)
+□ Device selected in top toolbar
+□ Run button clicked (Shift+F10)
+□ App installed (see "installed successfully" in Logcat)
+□ Login screen appears on device
+□ No crashes (Logcat shows only info/warning, no red errors)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+TIME ESTIMATES
+
+First Time Setup:
+  - Gradle Sync: 5 minutes
+  - Create Emulator: 3 minutes
+  - First Build: 5 minutes
+  - First Run: 2 minutes
+  - Total: ~15 minutes
+
+Subsequent Runs:
+  - Build: 1-2 minutes
+  - Install & Launch: 30 seconds
+  - Total: ~2-3 minutes
+
+═══════════════════════════════════════════════════════════════════════════════
+
+NEED HELP?
+
+Full guide: Open QUICK_START_ANDROID_STUDIO.md in project
+Dev guide: Open README_DEVELOPMENT.md
+Build status: Open PHASE_1_BUILD_STATUS.md
+
+═══════════════════════════════════════════════════════════════════════════════
