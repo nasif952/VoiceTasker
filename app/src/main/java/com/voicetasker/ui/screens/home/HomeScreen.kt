@@ -125,7 +125,7 @@ fun HomeScreen(
                             onToggleStatus = { viewModel.toggleTaskStatus(task.id) },
                             onDelete = { viewModel.deleteTask(task.id) },
                             onClick = {
-                                // TODO: Navigate to task detail/edit screen
+                                navController.navigate(NavRoute.TaskDetail.createRoute(task.id))
                             }
                         )
                     }

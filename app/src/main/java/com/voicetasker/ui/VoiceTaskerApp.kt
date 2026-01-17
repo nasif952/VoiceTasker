@@ -3,15 +3,18 @@ package com.voicetasker.ui
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.voicetasker.ui.navigation.NavRoute
 import com.voicetasker.ui.screens.auth.LoginScreen
 import com.voicetasker.ui.screens.auth.RegisterScreen
 import com.voicetasker.ui.screens.home.HomeScreen
 import com.voicetasker.ui.screens.task.TaskCreateScreen
+import com.voicetasker.ui.screens.task.TaskEditScreen
 
 /**
  * Main app-level Composable that sets up navigation.
@@ -61,6 +64,15 @@ fun VoiceTaskerApp() {
 
         composable(NavRoute.TaskCreate.route) {
             TaskCreateScreen(navController = navController)
+        }
+
+        composable(
+            route = NavRoute.TaskDetail.route,
+            arguments = listOf(
+                navArgument("taskId") { type = NavType.StringType }
+            )
+        ) {
+            TaskEditScreen(navController = navController)
         }
     }
 }
