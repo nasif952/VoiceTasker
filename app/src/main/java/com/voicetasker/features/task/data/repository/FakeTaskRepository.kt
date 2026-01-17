@@ -183,6 +183,30 @@ class FakeTaskRepository {
     }
 
     /**
+     * Toggle task completion status (COMPLETED <-> TODO).
+     */
+    suspend fun toggleTaskStatus(taskId: String): Result<Task> {
+        delay(300)
+
+        val task = tasks[taskId]
+            ?: return Result.failure(Exception("Task not found"))
+
+        val newStatus = if (task.status == TaskStatus.COMPLETED) {
+            TaskStatus.TODO
+        } else {
+            TaskStatus.COMPLETED
+        }
+
+        val updatedTask = task.copy(
+            status = newStatus,
+            updatedAt = LocalDateTime.now().toString()
+        )
+
+        tasks[taskId] = updatedTask
+        return Result.success(updatedTask)
+    }
+
+    /**
      * Helper to get all tasks (for testing).
      */
     fun getAllTasks(): List<Task> = tasks.values.toList()

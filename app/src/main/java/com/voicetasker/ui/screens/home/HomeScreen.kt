@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
@@ -43,6 +44,11 @@ fun HomeScreen(
     viewModel: TaskListViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
+    // Refresh tasks when screen becomes visible (e.g., after creating a new task)
+    LaunchedEffect(Unit) {
+        viewModel.refreshTasks()
+    }
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -116,7 +122,7 @@ fun HomeScreen(
                     items(viewModel.tasks.value) { task ->
                         TaskItem(
                             task = task,
-                            onComplete = { viewModel.completeTask(task.id) },
+                            onToggleStatus = { viewModel.toggleTaskStatus(task.id) },
                             onDelete = { viewModel.deleteTask(task.id) },
                             onClick = {
                                 // TODO: Navigate to task detail/edit screen
@@ -132,7 +138,7 @@ fun HomeScreen(
 @Composable
 fun TaskItem(
     task: com.voicetasker.core.model.Task,
-    onComplete: () -> Unit,
+    onToggleStatus: () -> Unit,
     onDelete: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -162,7 +168,7 @@ fun TaskItem(
             ) {
                 Checkbox(
                     checked = task.status == TaskStatus.COMPLETED,
-                    onCheckedChange = { onComplete() }
+                    onCheckedChange = { onToggleStatus() }
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))

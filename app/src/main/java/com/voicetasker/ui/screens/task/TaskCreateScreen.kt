@@ -1,5 +1,6 @@
 package com.voicetasker.ui.screens.task
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,10 +14,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -26,8 +30,12 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -35,6 +43,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.voicetasker.core.model.TaskPriority
 import com.voicetasker.features.task.presentation.TaskCreateViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,10 +53,41 @@ fun TaskCreateScreen(
     viewModel: TaskCreateViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
+    // State for date picker dialog
+    val showDatePicker = remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
+
     // Observe success state and navigate back
     if (viewModel.isCreateSuccess.value) {
         viewModel.resetCreateSuccess()
         navController.popBackStack()
+    }
+
+    // Date picker dialog
+    if (showDatePicker.value) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker.value = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                            viewModel.dueDate.value = formatter.format(Date(millis))
+                        }
+                        showDatePicker.value = false
+                    }
+                ) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker.value = false }) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
     }
 
     Scaffold(
@@ -135,14 +177,31 @@ fun TaskCreateScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Due date field
+            // Due date field with date picker
             OutlinedTextField(
                 value = viewModel.dueDate.value,
-                onValueChange = { viewModel.dueDate.value = it },
-                label = { Text("Due Date (YYYY-MM-DD)") },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !viewModel.isLoading.value,
-                singleLine = true
+                onValueChange = { },
+                label = { Text("Due Date") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(enabled = !viewModel.isLoading.value) {
+                        showDatePicker.value = true
+                    },
+                enabled = false,
+                readOnly = true,
+                singleLine = true,
+                trailingIcon = {
+                    IconButton(
+                        onClick = { showDatePicker.value = true },
+                        enabled = !viewModel.isLoading.value
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarMonth,
+                            contentDescription = "Select date"
+                        )
+                    }
+                },
+                placeholder = { Text("Tap to select date") }
             )
 
             Spacer(modifier = Modifier.height(24.dp))

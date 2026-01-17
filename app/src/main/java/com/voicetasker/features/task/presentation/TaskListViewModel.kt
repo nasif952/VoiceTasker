@@ -99,6 +99,26 @@ class TaskListViewModel @Inject constructor(
     }
 
     /**
+     * Toggle task completion status (complete/uncomplete).
+     */
+    fun toggleTaskStatus(taskId: String) {
+        viewModelScope.launch {
+            val result = taskRepository.toggleTaskStatus(taskId)
+
+            result.onSuccess { updatedTask ->
+                // Update in UI
+                tasks.value = tasks.value.map {
+                    if (it.id == taskId) updatedTask else it
+                }
+            }
+
+            result.onFailure { exception ->
+                error.value = exception.message ?: "Failed to update task"
+            }
+        }
+    }
+
+    /**
      * Refresh task list.
      */
     fun refreshTasks() {
