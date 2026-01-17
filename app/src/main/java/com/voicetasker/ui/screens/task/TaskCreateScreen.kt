@@ -2,48 +2,61 @@ package com.voicetasker.ui.screens.task
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.voicetasker.core.model.TaskPriority
 import com.voicetasker.features.task.presentation.TaskCreateViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Suppress("UNUSED_PARAMETER")
 fun TaskCreateScreen(
     viewModel: TaskCreateViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var isRecording by remember { mutableStateOf(false) }
+    // Observe success state and navigate back
+    if (viewModel.isCreateSuccess.value) {
+        viewModel.resetCreateSuccess()
+        navController.popBackStack()
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Create Task") }
+                title = { Text("Create Task") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
             )
         }
     ) { paddingValues ->
@@ -51,65 +64,128 @@ fun TaskCreateScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Top
         ) {
+            // Error message
+            if (viewModel.error.value != null) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Text(
+                        text = viewModel.error.value ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(12.dp)
+                    )
+                }
+            }
+
+            // Title field
             OutlinedTextField(
-                value = title,
-                onValueChange = { title = it },
-                label = { Text("Task Title") },
-                modifier = Modifier.fillMaxWidth()
+                value = viewModel.title.value,
+                onValueChange = { viewModel.title.value = it },
+                label = { Text("Task Title *") },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !viewModel.isLoading.value,
+                singleLine = true
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Description field
             OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
+                value = viewModel.description.value,
+                onValueChange = { viewModel.description.value = it },
                 label = { Text("Description") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp),
+                    .height(100.dp),
+                enabled = !viewModel.isLoading.value,
                 maxLines = 4
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Priority selection
+            Text("Priority", style = MaterialTheme.typography.labelMedium)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                TaskPriority.values().forEach { priority ->
+                    OutlinedButton(
+                        onClick = { viewModel.priority.value = priority },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(40.dp),
+                        enabled = !viewModel.isLoading.value
+                    ) {
+                        Text(priority.name)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Due date field
+            OutlinedTextField(
+                value = viewModel.dueDate.value,
+                onValueChange = { viewModel.dueDate.value = it },
+                label = { Text("Due Date (YYYY-MM-DD)") },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !viewModel.isLoading.value,
+                singleLine = true
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Save button
             Button(
-                onClick = {
-                    // TODO: Save task
-                    navController.popBackStack()
-                },
-                modifier = Modifier.fillMaxWidth()
+                onClick = { viewModel.createTask() },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !viewModel.isLoading.value
             ) {
-                Text("Save Task")
+                if (viewModel.isLoading.value) {
+                    Text("Creating...")
+                } else {
+                    Text("Create Task")
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Divider text
             Text(
-                text = "Or use voice:",
-                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+                text = "Or use voice input",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            FloatingActionButton(
-                onClick = {
-                    // TODO: Start voice recording
-                    isRecording = !isRecording
+            // Voice input display
+            if (viewModel.voiceInput.value.isNotBlank()) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                    )
+                ) {
+                    Text(
+                        text = viewModel.voiceInput.value,
+                        modifier = Modifier.padding(12.dp),
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Mic,
-                    contentDescription = if (isRecording) "Stop Recording" else "Start Recording"
-                )
-            }
-
-            if (isRecording) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text("Recording...")
             }
         }
     }

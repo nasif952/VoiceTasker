@@ -9,9 +9,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Task(
     val id: String,
-    val userId: String,
     val title: String,
-    val description: String? = null,
+    val description: String = "",
     val status: TaskStatus = TaskStatus.TODO,
     val priority: TaskPriority = TaskPriority.MEDIUM,
     val createdAt: String,
@@ -20,7 +19,9 @@ data class Task(
     val reminderEnabled: Boolean = false,
     val reminderTime: String? = null,
     val voiceTranscription: String? = null,
-    val aiExtractedIntent: String? = null
+    val aiExtractedIntent: String? = null,
+    val syncStatus: String = "PENDING",
+    val userId: String = "current_user"
 )
 
 /**
@@ -31,10 +32,11 @@ data class CreateTaskRequest(
     val title: String,
     val description: String? = null,
     val dueDate: String? = null,
-    val priority: String = "MEDIUM",
-    val reminderEnabled: Boolean = false,
+    val priority: TaskPriority? = null,
+    val reminderEnabled: Boolean? = null,
     val reminderTime: String? = null,
-    val voiceTranscription: String? = null
+    val voiceTranscription: String? = null,
+    val aiExtractedIntent: String? = null
 )
 
 /**
@@ -44,8 +46,8 @@ data class CreateTaskRequest(
 data class UpdateTaskRequest(
     val title: String? = null,
     val description: String? = null,
-    val status: String? = null,
-    val priority: String? = null,
+    val status: TaskStatus? = null,
+    val priority: TaskPriority? = null,
     val dueDate: String? = null,
     val reminderEnabled: Boolean? = null,
     val reminderTime: String? = null
