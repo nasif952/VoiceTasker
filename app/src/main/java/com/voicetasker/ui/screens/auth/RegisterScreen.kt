@@ -24,18 +24,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.voicetasker.features.auth.presentation.RegisterViewModel
 
 @Composable
-@Suppress("UNUSED_PARAMETER")
 fun RegisterScreen(
     viewModel: RegisterViewModel = hiltViewModel(),
     onRegisterSuccess: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    // Observe success state and navigate
+    if (viewModel.isRegisterSuccess.value) {
+        viewModel.resetRegisterSuccess()
+        onRegisterSuccess()
+    }
 
     Column(
         modifier = Modifier
@@ -44,80 +42,89 @@ fun RegisterScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Create Account", style = androidx.compose.material3.MaterialTheme.typography.titleLarge)
+        Text(
+            text = "Create Account",
+            style = androidx.compose.material3.MaterialTheme.typography.titleLarge
+        )
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // Name field
         OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
+            value = viewModel.name.value,
+            onValueChange = { viewModel.name.value = it },
             label = { Text("Full Name") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
+            enabled = !viewModel.isLoading.value,
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Email field
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
+            value = viewModel.email.value,
+            onValueChange = { viewModel.email.value = it },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
+            enabled = !viewModel.isLoading.value,
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Password field
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = viewModel.password.value,
+            onValueChange = { viewModel.password.value = it },
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            enabled = !isLoading
+            enabled = !viewModel.isLoading.value,
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Confirm password field
         OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            value = viewModel.confirmPassword.value,
+            onValueChange = { viewModel.confirmPassword.value = it },
             label = { Text("Confirm Password") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            enabled = !isLoading
+            enabled = !viewModel.isLoading.value,
+            singleLine = true
         )
 
-        if (errorMessage != null) {
+        // Error message
+        if (viewModel.error.value != null) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = errorMessage!!, color = androidx.compose.material3.MaterialTheme.colorScheme.error)
+            Text(
+                text = viewModel.error.value ?: "",
+                color = androidx.compose.material3.MaterialTheme.colorScheme.error,
+                style = androidx.compose.material3.MaterialTheme.typography.bodySmall
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Register button
         Button(
-            onClick = {
-                // TODO: Implement registration logic
-                when {
-                    email.isBlank() || name.isBlank() || password.isBlank() -> {
-                        errorMessage = "Please fill all fields"
-                    }
-                    password != confirmPassword -> {
-                        errorMessage = "Passwords do not match"
-                    }
-                    else -> {
-                        onRegisterSuccess()
-                    }
-                }
-            },
+            onClick = { viewModel.register() },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
+            enabled = !viewModel.isLoading.value
         ) {
-            Text("Register")
+            if (viewModel.isLoading.value) {
+                Text("Creating account...")
+            } else {
+                Text("Register")
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Navigate to login
         TextButton(onClick = onNavigateToLogin) {
             Text("Already have an account? Login")
         }
